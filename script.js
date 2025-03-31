@@ -1,24 +1,59 @@
-let tl = gsap.timeline();
+function locoScroll() {
 
-tl.from("#nav h3", {
-    y: -50,
-    opacity: 0,
-    delay: 0.4,
-    duration: 1,
-    stagger: 0.3
-})
+    gsap.registerPlugin(ScrollTrigger);
 
-tl.from("#main h1", {
-    x: -500,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.4
-})
+    const locoScroll = new LocomotiveScroll({
+    el: document.querySelector("#main"),
+    smooth: true
+    });
+    locoScroll.on("scroll", ScrollTrigger.update);
 
-tl.from("img", {
-    x: 100,
-    rotate: 45,
-    opacity: 0,
-    stagger: 0.4,
-    duration: 0.5
-})
+    ScrollTrigger.scrollerProxy("#main", {
+    scrollTop(value) {
+        return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y;
+    }, 
+    getBoundingClientRect() {
+        return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+    },
+    pinType: document.querySelector("#main").style.transform ? "transform" : "fixed"
+    });
+
+    ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+    ScrollTrigger.refresh();
+}
+
+function textSplitting() {
+
+    var allH1 = document.querySelectorAll("#page2 h1");
+
+    allH1.forEach(function(elem){
+        var h1Text = elem.textContent;
+        var splitText = h1Text.split("");
+
+        var clutter = "";
+        splitText.forEach(function(e){
+            clutter += `<span>${e}</span>`
+        })
+        elem.innerHTML = clutter;
+    })
+}
+
+function gsapAnimation() {
+
+    gsap.to("#page2 h1 span", {
+        color:"#E3E3C4",
+        stagger:0.1,
+        scrollTrigger:{
+            trigger:"#page2 h1",
+            scroller:"#main",
+            markers:true,
+            start:"top 50%",
+            end:"top 0%",
+            scrub:2
+        }
+    })
+}
+
+locoScroll();
+textSplitting();
+gsapAnimation();
