@@ -1,1 +1,1 @@
-# A static landing page made using HTML & CSS & gSAP (for Animation)
+A static landing page made using HTML & CSS & gSAP (for Animation)
